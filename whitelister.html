@@ -1,0 +1,93 @@
+<head>
+  <script type="text/javascript">
+    jsonString = "";
+
+    function changeDivContent(newJson) {
+      if(newJson){
+        jsonString = "";
+      }
+
+      input = document.getElementById("description").value;
+      urls = input.split(/(?:,| |\n)+/);
+      urls.forEach(myFunction);
+    	document.getElementById("content").innerHTML = jsonString;//urls[1];//document.getElementById("description").value;
+    };
+
+    function myFunction(value, index, array) {
+      var method = document.getElementById("method").value;
+
+      value = value.replaceAll("\"", "");
+      if(value.trim() == 0){
+        return
+      }
+
+      if(value.startsWith("/")){
+        prefix = value.substring(1,4);
+        sufix = value.substring(5);
+      }
+      else{
+        prefix = value.substring(0,3);
+        sufix = value.substring(4);
+      }
+
+      if(prefix.startsWith("a")){
+        authorized = "AUTH";
+      }
+      else{
+        authorized = "NONAUTH";
+      }
+
+      if(prefix.endsWith("m")){
+        channel = "RMA";
+      }
+      else{
+        channel = "ROA";
+      }
+
+      newItem = "{<br>";
+      newItem = newItem + "&emsp;\"color\": \"" + value + "\",<br>"
+      newItem = newItem + "&emsp;\"prefix\": \"" + prefix + "\",<br>"
+      newItem = newItem + "&emsp;\"sufix\": \"" + sufix + "\",<br>"
+      newItem = newItem + "&emsp;\"authorized\": \"" + authorized + "\",<br>"
+      newItem = newItem + "&emsp;\"channel\": \"" + channel + "\",<br>"
+      newItem = newItem + "&emsp;\"method\": \"" + method + "\"<br>"
+      newItem = newItem + "},";
+
+      jsonString = jsonString + newItem + "<br>";
+    }
+  </script>
+</head>
+
+<body>
+<br>
+<br>
+  METHOD :
+  <select name="method" id="method">
+    <option value="GET">GET</option>
+    <option value="POST">POST</option>
+    <option value="PUT">PUT</option>
+    <option value="DELETE">DELETE</option>
+  </select>
+  <br>
+  <br>
+  Enter The Urls
+	<br>
+        <textarea rows = "5" cols = "60" id = "description" placeholder="Give me the url list">
+            "a/m/banking/retail/users",
+            a/m/banking/retail/cards
+            /a/m/banking/retail/accounts,
+            "/a/o/banking/retail/debit",
+        </textarea>
+  <br>
+  <br>
+  <button onclick="changeDivContent(false)">Append the URls</button>
+  <button onclick="changeDivContent(true)">New JSON</button>
+
+<br>
+<br>
+<br>
+  <div id="content"></div>
+
+</body>
+
+</html>
