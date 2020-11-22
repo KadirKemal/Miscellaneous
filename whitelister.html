@@ -1,3 +1,4 @@
+<html>
 <head>
   <script type="text/javascript">
     jsonString = "";
@@ -9,11 +10,11 @@
 
       input = document.getElementById("description").value;
       urls = input.split(/(?:,| |\n)+/);
-      urls.forEach(myFunction);
-    	document.getElementById("content").innerHTML = jsonString;//urls[1];//document.getElementById("description").value;
+      urls.forEach(createJsonModelsForEBIandEIB);
+    	document.getElementById("content").innerHTML = "[<br>" + jsonString + "<br>]";//urls[1];//document.getElementById("description").value;
     };
 
-    function myFunction(value, index, array) {
+    function createJsonModelsForEBIandEIB(value, index, array) {
       var method = document.getElementById("method").value;
 
       value = value.replaceAll("\"", "");
@@ -31,10 +32,10 @@
       }
 
       if(prefix.startsWith("a")){
-        authorized = "AUTH";
+        accesstype = "AUTH";
       }
       else{
-        authorized = "NONAUTH";
+        accesstype = "NONAUTH";
       }
 
       if(prefix.endsWith("m")){
@@ -44,16 +45,21 @@
         channel = "ROA";
       }
 
-      newItem = "{<br>";
-      newItem = newItem + "&emsp;\"color\": \"" + value + "\",<br>"
-      newItem = newItem + "&emsp;\"prefix\": \"" + prefix + "\",<br>"
-      newItem = newItem + "&emsp;\"sufix\": \"" + sufix + "\",<br>"
-      newItem = newItem + "&emsp;\"authorized\": \"" + authorized + "\",<br>"
-      newItem = newItem + "&emsp;\"channel\": \"" + channel + "\",<br>"
-      newItem = newItem + "&emsp;\"method\": \"" + method + "\"<br>"
-      newItem = newItem + "},";
+      jsonString = jsonString + createJsonModel("EBI", channel, accesstype, method, sufix) + ",<br>" + createJsonModel("EIB", channel, accesstype, method, sufix) + ",<br>";
+    }
 
-      jsonString = jsonString + newItem + "<br>";
+    function createJsonModel(entity, channel, accesstype, method, url){
+      newItem = "{<br>";
+      newItem = newItem + "&emsp;\"entity\": \"" + entity + "\",<br>";
+      newItem = newItem + "&emsp;\"channel\": \"" + channel + "\",<br>";
+      newItem = newItem + "&emsp;\"accesstype\": \"" + accesstype + "\",<br>";
+      newItem = newItem + "&emsp;\"serviceGroup\": \"OTHER\",<br>";
+      newItem = newItem + "&emsp;\"method\": \"" + method + "\",<br>";
+      newItem = newItem + "&emsp;\"url\": \"" + url + "\"<br>";
+      newItem = newItem + "&emsp;\"_class\": \"com.retail.genericservices.entity.AllowedURL\"<br>";
+      newItem = newItem + "}";
+
+      return newItem;
     }
   </script>
 </head>
