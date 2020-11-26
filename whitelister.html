@@ -14,8 +14,8 @@
       urls = input.split(/(?:,| |\n)+/);
       urls.forEach(createJsonModelsForEBIandEIB);
 
-      jsonString = jsonString.slice(0, -5)
-    	document.getElementById("content").innerHTML = "<p style='color:red'> " + errorText + "</p>" + "<p style='color:black'>[<br>" + jsonString + "<br>]</p>";//urls[1];//document.getElementById("description").value;
+      jString = jsonString.slice(0, -5)
+    	document.getElementById("content").innerHTML = "<p style='color:red'> " + errorText + "</p>" + "<p style='color:black'>[<br>" + jString + "<br>]</p>";//urls[1];//document.getElementById("description").value;
     };
 
     function createJsonModelsForEBIandEIB(value, index, array) {
