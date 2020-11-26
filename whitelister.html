@@ -2,16 +2,20 @@
 <head>
   <script type="text/javascript">
     jsonString = "";
+    errorText = "";
 
     function changeDivContent(newJson) {
       if(newJson){
         jsonString = "";
       }
+      errorText = "";
 
       input = document.getElementById("description").value;
       urls = input.split(/(?:,| |\n)+/);
       urls.forEach(createJsonModelsForEBIandEIB);
-    	document.getElementById("content").innerHTML = "[<br>" + jsonString + "<br>]";//urls[1];//document.getElementById("description").value;
+
+      jsonString = jsonString.slice(0, -5)
+    	document.getElementById("content").innerHTML = "<p style='color:red'> " + errorText + "</p>" + "<p style='color:black'>[<br>" + jsonString + "<br>]</p>";//urls[1];//document.getElementById("description").value;
     };
 
     function createJsonModelsForEBIandEIB(value, index, array) {
@@ -24,25 +28,33 @@
 
       if(value.startsWith("/")){
         prefix = value.substring(1,4);
-        sufix = value.substring(5);
+        sufix = value.substring(2);
       }
       else{
         prefix = value.substring(0,3);
-        sufix = value.substring(4);
+        sufix = value.substring(3);
       }
 
       if(prefix.startsWith("a")){
         accesstype = "AUTH";
       }
-      else{
+      else if(prefix.startsWith("n")){
         accesstype = "NONAUTH";
+      }
+      else{
+        errorText = errorText + "ERROR : " + value + "<br>"
+        return
       }
 
       if(prefix.endsWith("m")){
         channel = "RMA";
       }
+      else if(prefix.endsWith("o")){
+        channel = "RMA";
+      }
       else{
-        channel = "ROA";
+        errorText = errorText + "ERROR : " + value + "<br>"
+        return
       }
 
       jsonString = jsonString + createJsonModel("EBI", channel, accesstype, method, sufix) + ",<br>" + createJsonModel("EIB", channel, accesstype, method, sufix) + ",<br>";
@@ -78,12 +90,7 @@
   <br>
   Enter The Urls
 	<br>
-        <textarea rows = "5" cols = "60" id = "description" placeholder="Give me the url list">
-            "a/m/banking/retail/users",
-            a/m/banking/retail/cards
-            /a/m/banking/retail/accounts,
-            "/a/o/banking/retail/debit",
-        </textarea>
+        <textarea rows = "5" cols = "60" id = "description" placeholder="a/m/banking/retail/users, a/m/banking/retail/cards"></textarea>
   <br>
   <br>
   <button onclick="changeDivContent(false)">Append the URls</button>
